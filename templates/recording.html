@@ -1,0 +1,47 @@
+{% from "bootstrap5/form.html" import render_form %} {% block content %} {%
+include "edited_header.html" %}
+
+<!-- Page Header -->
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/recording-bg.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h1>Recording...</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto text-center">
+
+        <h3>Recording...</h3>
+        <h4>Pleae Wait!</h4>
+        <br>
+                <button class="btn btn-primary btn-lg">
+                <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('end_recording', recording_id=recording_id) }}"
+                >End Recording</a
+              >
+        </button>
+        <button class="btn btn-primary btn-lg">
+                <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('get_all_recordings') }}"
+                >Home</a
+              >
+        </button>
+
+      </div>
+    </div>
+  </div>
+</main>
+{% include "footer.html" %} {% endblock %}

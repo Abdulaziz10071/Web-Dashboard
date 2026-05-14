@@ -1,0 +1,121 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+<!-- Page Header-->
+
+
+<header class="masthead" style="background-image: url('../static/assets/img/activities/{{ record.title.lower() }}.jpg')">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="post-heading">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <p class="flash">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+          <h1>{{ record.title }}</h1>
+          <span class="meta"
+            >Recorded by
+            {% if record.user.website %}
+            <a href="https://{{ record.user.website }}", target="_blank">{{ record.author }}</a>
+            {% else %}
+            <a href="#">{{ record.author }}</a>
+            {% endif %}
+            on {{ record.date }}
+          </span>
+          <br>
+          <span>Duration: {{ record.duration }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Record Content -->
+<article>
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+          <!-- Sensor Data Summary Board -->
+        <div class="card mb-5 shadow-sm">
+            <div class="card-body bg-light text-center rounded">
+                <h5 class="card-title text-muted mb-1">Total Data Packets Captured</h5>
+                <h2 class="text-primary display-4">{{ total_points }}</h2>
+            </div>
+        </div>
+
+        <h4 class="mb-3">Sensor Breakdown</h4>
+        <div class="row mb-5">
+            {% for stat in sensor_stats %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0">{{ stat.sensor }}</h6>
+                    </div>
+                    <div class="card-body bg-light">
+                        <p class="mb-2"><strong>Type:</strong> {{ stat.type }}</p>
+                        <p class="mb-3"><strong>Readings:</strong> {{ stat.count }}</p>
+
+                        {% if stat.type == '3-Axis Sensor' %}
+                        <div class="p-2 border rounded bg-white">
+                            <span class="d-block small text-muted mb-1">Average Coordinates</span>
+                            <strong>X:</strong> {{ stat.mean_x }} <br>
+                            <strong>Y:</strong> {{ stat.mean_y }} <br>
+                            <strong>Z:</strong> {{ stat.mean_z }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center text-muted">
+                <p>No sensor statistics available for this recording.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <!--TODO: Only show Edit Post button if user id is 1 (admin user) or author -->
+        {% if current_user.id == 1 or current_user.id == record.user_id %}
+        <div class="d-flex justify-content-end mb-4">
+          <a
+            class="btn btn-primary float-right"
+            href="{{ url_for('edit_recording', recording_id=record.id) }}"
+            >Edit Recording</a
+          >
+        </div>
+        {% endif %}
+
+        <!-- Comments Area -->
+        <!-- TODO: Add a CKEditor for commenting below -->
+         {{ render_form(comment, button_map={"submit": "primary"}) }}
+        <div class="comment">
+          <!-- TODO: Show all the comments on a post -->
+         <ul class="commentList">
+    {% for comment in record.comments %}
+    <li>
+        <div class="commenterImage">
+            <!-- Access user email via relationship and apply gravatar filter -->
+            <img src="{{ comment.user.email | gravatar }}" alt="Avatar">
+        </div>
+        <div class="commentText">
+            <p>{{ comment.text|safe }}</p>
+            <span class="date sub-text">{{ comment.user.name }}</span>
+
+            {% if current_user.id == 1 or current_user.id == comment.user_id %}
+            <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-link text-danger p-0" style="text-decoration:none;">✘</button>
+            </form>
+            {% endif %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+{% include "footer.html" %}

@@ -1,0 +1,54 @@
+{% include "header.html" %}
+
+<div class="bg-light py-5">
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+
+      <div class="card profile-card shadow border-0 rounded-lg overflow-hidden w-100">
+          <div class="row no-gutters">
+
+              <div class="col-md-5 text-center p-5 bg-white border-right">
+                  {% if id == 1 %}
+                  <img src="../static/assets/img/personal-photo.jpg" alt="User Profile" class="rounded-circle profile-img mb-3 shadow-sm">
+                  {% else %}
+                  <img src="../static/assets/img/profile.jpg" alt="User Profile" class="rounded-circle profile-img mb-3 shadow-sm">
+                  {% endif %}
+                  <h3 class="card-title font-weight-bold mb-0">{{ name + ' ' + last_name }}</h3>
+                  <p class="text-muted">{{ user_type }}</p>
+
+                  <a class="btn btn-primary w-100 mt-4 rounded-pill px-lg-3 py-3 py-lg-4"
+                     href="{{ url_for('edit_account', user_id=id) }}">
+                    Edit Account
+                    </a>
+
+              </div>
+
+              <div class="col-md-7 p-5 bg-light d-flex flex-column justify-content-center">
+
+                  <h5 class="text-uppercase text-muted font-weight-bold mb-4" style="letter-spacing: 1px;">Biometrics</h5>
+
+                  <div class="row text-center mb-4">
+                      <div class="col-4">
+
+                          <!-- To be replaced with the user's age -->
+                          <h2 class="font-weight-bold mb-0">{{ age }}</h2>
+                          <small class="text-muted">Age</small>
+                      </div>
+                      <div class="col-4 border-left border-right">
+                          <h2 class="font-weight-bold mb-0">{{ height }}</h2>
+                          <small class="text-muted">Height (cm)</small>
+                      </div>
+                      <div class="col-4">
+                          <h2 class="font-weight-bold mb-0">{{ weight }}</h2>
+                          <small class="text-muted">Weight (kg)</small>
+                      </div>
+                  </div>
+
+
+              </div>
+
+          </div>
+      </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

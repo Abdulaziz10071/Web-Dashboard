@@ -1,0 +1,71 @@
+{% include "header.html" %}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('../static/assets/img/home-bg.jpg')">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Track Your Activity</h1>
+          <span class="subheading">Monitor Your Smartwatch.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+
+      <!-- Check if they are logged in first -->
+      {% if current_user.is_authenticated %}
+
+          <!-- Loop through all recordings -->
+          {% for recording in recordings[::-1][3:] %}
+          <div class="recording-preview">
+
+            <a href="{{ url_for('show_recording', recording_id=recording.id) }}">
+              <h3 class="recording-title">{{ recording.title }}</h3>
+            </a>
+
+            <p class="record-meta">
+              Recorded by
+
+              <!-- THE FIX: Use the SQLAlchemy relationship to find the author's website -->
+              {% if recording.user.website %}
+                <a href="https://{{ recording.user.website }}", target="_blank">{{ recording.author }}</a>
+              {% else %}
+                <a href="#">{{ recording.author }}</a>
+              {% endif %}
+
+              on {{ recording.date }}
+
+              <!-- SECURITY CHECK: Is this user an Admin (1) OR the original author? -->
+              {% if current_user.id == 1 or current_user.id == recording.user_id %}
+                <a href="{{ url_for('delete_recording', recording_id=recording.id) }}" class="text-danger text-decoration-none ms-2">✘</a>
+              {% endif %}
+            </p>
+          </div>
+
+          <hr class="my-4" />
+          {% endfor %}
+
+          <!-- New Recording Button -->
+          <div class="d-flex justify-content-end mb-4">
+            <a class="btn btn-primary float-right" href="{{ url_for('add_new_recording') }}">Create New Recording</a>
+          </div>
+
+      {% else %}
+          <!-- If they are a guest, prompt them to log in -->
+          <div class="d-flex justify-content-center mb-4">
+            <a class="btn btn-primary" href="{{ url_for('login') }}">LOGIN OR REGISTER TO START!</a>
+          </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}
